@@ -1,0 +1,209 @@
+<DOCTYPE html>
+<html lang="bn"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAYAZ VIP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Welcome Screen - Black background with red lighting */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(200, 0, 0, 0.3) 0%, #000 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: redGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes redGlow {
+            0% { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.2); }
+            100% { box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.4); }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #ff6666;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: none;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Iframe Container - Fullscreen for Ai Mod and Step Maker */
+        .iframe-container {
+            width: 100%;
+            height: calc(100vh - 80px);
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* TK Club iframe keeps original styling */
+        .tk-club-container {
+            height: calc(100vh - 80px);
+        }
+
+        /* Bottom Navigation - Black background with red lighting */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -5px 20px rgba(255, 0, 0, 0.5);
+            z-index: 999;
+            border-top: 3px solid #ff0000;
+        }
+
+        .nav-btn {
+            width: 70px;
+            height: 70px;
+            border: 3px solid #000000 !important;
+            border-radius: 50% !important;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.3) 0%, #000 70%);
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            background: radial-gradient(circle, rgba(255, 50, 50, 0.5) 0%, #000 70%);
+        }
+
+        .nav-btn.active {
+            background: radial-gradient(circle, #ff0000 0%, #cc0000 70%);
+            box-shadow: 0 0 40px #ff0000;
+        }
+
+        /* Hide iframes initially */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .nav-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen - Black with red lighting -->
+    <div class="welcome-screen" id="welcomeScreen" style="display: none;">
+        <h1 class="welcome-title">🔥WELCOME🔥</h1>
+        <div class="loading-text">FAYAZ VIP</div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="main-container" id="mainContainer" style="display: block;">
+        <!-- TK Club Page -->
+        <div class="page-content active" id="tkClub">
+            <iframe src="https://tkclub2.com/#/register?invitationCode=73683205834" class="iframe-container tk-club-container" frameborder="0">
+            </iframe>
+        </div>
+
+        <!-- Ai Mod Page - Fullscreen iframe -->
+        <div class="page-content" id="aiMod">
+            <iframe src="ai-mod.html" class="iframe-container" frameborder="0">
+            </iframe>
+        </div>
+
+        <!-- Step Maker Page - Fullscreen iframe -->
+        <div class="page-content" id="stepMaker">
+            <iframe src="step-maker.html" class="iframe-container" frameborder="0">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation - Black with red lighting -->
+    <div class="bottom-nav">
+        <button class="nav-btn active" id="tkClubBtn">TK</button>
+        <button class="nav-btn" id="aiModBtn">AI</button>
+        <button class="nav-btn" id="stepMakerBtn">ST</button>
+    </div>
+
+    <script>
+        // Wait for app to load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('welcomeScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+            }, 3000);
+        });
+
+        // Navigation functionality
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+
+        navButtons.forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all
+                navButtons.forEach(b => b.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+                
+                // Add active to clicked
+                this.classList.add('active');
+                pages[index].classList.add('active');
+            });
+        });
+    </script>
+
+<style>.qc-cmp-showing { visibility: hidden !important; } body.didomi-popup-open { overflow: auto !important; } #didomi-host { visibility: hidden !important; }</style></body></html>

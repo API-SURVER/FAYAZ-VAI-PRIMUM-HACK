@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Step Maker Calculator</title>
+    <style>
+        html, body { 
+            margin: 0; padding: 0; 
+            height: 100%; width: 100%; 
+            overflow: hidden; 
+            background: #1a0a10; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .bg-animation {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(transparent 90%, rgba(255, 100, 150, 0.3) 40%),
+                linear-gradient(90deg, transparent 90%, rgba(255, 150, 200, 0.25) 40%),
+                radial-gradient(circle at 20% 80%, rgba(255, 150, 200, 0.35) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(220, 100, 255, 0.3) 0%, transparent 50%);
+            background-size: 40px 40px, 40px 40px, 200px 200px, 300px 300px;
+            animation: glowPulse 3s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.8; filter: hue-rotate(0deg) brightness(1.1); }
+            100% { opacity: 1; filter: hue-rotate(15deg) brightness(1.3); }
+        }
+
+        .pred-box-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 92%; max-width: 550px; z-index: 10;
+        }
+        .pred-box {
+            background: rgba(15, 5, 20, 0.98); 
+            border-radius: 30px; 
+            color: #fff;
+            padding: 35px 30px; 
+            text-align: center; 
+            border: 6px solid;
+            border-image: linear-gradient(45deg, #8B0000, #B22222, #DC143C, #B22222, #8B0000) 1;
+            box-shadow: 
+                0 25px 50px rgba(255, 100, 150, 0.5),
+                0 0 50px rgba(255, 150, 200, 0.4),
+                inset 0 0 30px rgba(255, 150, 200, 0.15);
+            position: relative;
+        }
+        .pred-box::before {
+            content: '';
+            position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            background: linear-gradient(45deg, #8B0000, #B22222, #DC143C, #B22222, #8B0000);
+            border-radius: 34px;
+            z-index: -1;
+            animation: borderRotate 4s linear infinite;
+            filter: blur(8px);
+        }
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pred-title { 
+            font-size: 20px; 
+            font-weight: 900; 
+            background: linear-gradient(45deg, #ff8fb3, #ff99cc, #ff6699);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 150, 200, 0.8); 
+            margin-bottom: 25px;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes titleGlow {
+            0% { filter: brightness(1.1) drop-shadow(0 0 12px rgba(255,150,200,0.6)); }
+            100% { filter: brightness(1.4) drop-shadow(0 0 28px rgba(255,150,200,1)); }
+        }
+        
+        input.pred-input {
+            width: 88%; 
+            padding: 18px; 
+            background: rgba(5, 0, 10, 0.9); 
+            border: 4px solid;
+            border-image: linear-gradient(45deg, #8B0000, #DC143C) 1;
+            border-radius: 20px; 
+            color: #fff; 
+            margin-bottom: 25px; 
+            font-size: 17px; 
+            text-align: center; 
+            outline: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.5);
+        }
+        input.pred-input:focus {
+            border-image: linear-gradient(45deg, #DC143C, #8B0000) 1;
+            box-shadow: 0 0 25px rgba(139, 0, 0, 0.7);
+            transform: scale(1.02);
+        }
+        
+        .btn-pred-login {
+            width: 92%; 
+            padding: 22px 0; 
+            border-radius: 20px; 
+            border: 3px solid #8B0000;
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            background: linear-gradient(45deg, #ff8fb3, #ff99cc);
+            color: #fff;
+            box-shadow: 
+                0 8px 25px rgba(255, 150, 200, 0.6),
+                0 0 30px rgba(255, 180, 210, 0.5);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-pred-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(255, 150, 200, 0.8),
+                0 0 40px rgba(255, 180, 210, 0.9);
+        }
+        .btn-pred-login:active {
+            transform: translateY(-1px);
+        }
+        
+        #stepResult { 
+            margin-top: 25px; 
+            color: #fff; 
+            text-align: left; 
+            max-height: 220px; 
+            overflow-y: auto;
+            background: rgba(10, 0, 15, 0.9); 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #8B0000, #B22222) 1;
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+        }
+        #stepResult p {
+            margin: 8px 0; 
+            border-bottom: 2px solid rgba(139, 0, 0, 0.7); 
+            padding-bottom: 8px;
+            font-weight: 500;
+        }
+        #stepResult::-webkit-scrollbar {
+            width: 8px;
+        }
+        #stepResult::-webkit-scrollbar-track {
+            background: rgba(5,0,10,0.6);
+        }
+        #stepResult::-webkit-scrollbar-thumb {
+            background: linear-gradient(#8B0000, #B22222);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div id="stepMakerPage">
+        <div class="pred-box-container">
+            <div class="pred-box">
+                <div class="pred-title">FAYAZ VIP</div>
+                <input type="number" class="pred-input" id="stepBal" placeholder="Current Balance">
+                <input type="number" class="pred-input" id="stepTotal" placeholder="Total Steps">
+                <button class="btn-pred-login" onclick="calculateSteps()">CALCULATE</button>
+                <div id="stepResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateSteps() {
+            let b = parseFloat(document.getElementById('stepBal').value);
+            let s = parseInt(document.getElementById('stepTotal').value);
+            if(!b || !s) return alert("Please enter all details!");
+            
+            let output = "";
+            let firstStep = b / (Math.pow(2, s) - 1);
+            for(let i=0; i<s; i++) {
+                output += `<p style="margin:8px 0; border-bottom:2px solid rgba(139, 0, 0, 0.8); padding-bottom:8px; font-weight:500;">Step ${i+1}: ${(firstStep * Math.pow(2, i)).toFixed(2)}</p>`;
+            }
+            document.getElementById('stepResult').innerHTML = output;
+        }
+    </script>
+
+</body></html>
